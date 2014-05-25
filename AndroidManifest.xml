@@ -8,6 +8,9 @@
         android:minSdkVersion="8"
         android:targetSdkVersion="19" />
 
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -21,6 +24,17 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <service
+            android:name="kusix.myflowers.service.DataReceiveService"
+            android:enabled="true"
+            android:label="dataReceiveService" >
+        </service>
+
+        <activity
+            android:name="kusix.myflowers.bluetooth.BluetoothActivity"
+            android:label="@string/title_activity_bluetooth" >
         </activity>
     </application>
 

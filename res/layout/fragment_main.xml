@@ -8,10 +8,32 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="kusix.myflowers.MainActivity$PlaceholderFragment" >
 
-    <TextView
+    
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="5dp" >
+        
+    <TextView
+        android:id="@+id/temp_name_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/temp_name"
         android:textSize="@dimen/data_size" />
+    <TextView
+        android:id="@+id/temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_data"
+        android:textSize="@dimen/data_size" />
+    <TextView
+        android:id="@+id/temp_unit_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/temp_unit"
+        android:textSize="@dimen/data_size" />
+    </LinearLayout>
 
 </RelativeLayout>
