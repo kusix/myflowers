@@ -11,9 +11,8 @@ import android.util.Log;
 public class JsonProtocolParser implements ProtocolParser<JSONObject> {
 
 	@Override
-	public JSONObject parse(char[] data) {
-		String json = String.valueOf(data);
-		Log.d(getClass().getSimpleName(), "parse json : "+json);
+	public JSONObject parse(String json) {
+		Log.d(getClass().getSimpleName(), "parse json string: "+json);
 		JSONObject obj = new JSONObject();
 		JSONTokener tokener = new JSONTokener(json);
 		try {
@@ -24,10 +23,6 @@ public class JsonProtocolParser implements ProtocolParser<JSONObject> {
 		return obj;
 	}
 
-	@Override
-	public int getEOF() {
-		// TODO Auto-generated method stub
-		return -1;
-	}
+
 
 }

@@ -1,4 +1,4 @@
-package kusix.myflowers;
+package kusix.myflowers.model;
 
 public class Flower {
 	

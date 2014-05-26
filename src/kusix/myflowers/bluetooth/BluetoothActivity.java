@@ -25,6 +25,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+/**
+ * find and add bluetooth device
+ * @author kusix
+ *
+ */
 public class BluetoothActivity extends ActionBarActivity {
 
 	private BluetoothReceiver receiver;
@@ -33,8 +38,7 @@ public class BluetoothActivity extends ActionBarActivity {
 	private List<BluetoothDevice> deviceList;
 	private IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
 	private BluetoothClient client;
-	private final String lockName = "BOLUTEK";
-	private String message = "D";
+	private static final String GET_DATE = "D";
 	private ListView listView;
 	private Context context;
 
@@ -68,9 +72,9 @@ public class BluetoothActivity extends ActionBarActivity {
 						.show();
 				client = new BluetoothClient(device, handler);
 				try {
-					client.connect(message);
+					client.connect(GET_DATE);
 				} catch (Exception e) {
-					Log.e("TAG", e.toString());
+					Log.e(getClass().getSimpleName(), e.toString());
 				}
 			}
 		});
@@ -78,6 +82,7 @@ public class BluetoothActivity extends ActionBarActivity {
 		bluetoothAdapter.startDiscovery();
 	}
 
+	//bluetooth client send data to activity
 	private final Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
@@ -85,14 +90,14 @@ public class BluetoothActivity extends ActionBarActivity {
 			case BluetoothClient.CONNECT_FAILED:
 				Toast.makeText(context, "连接失败", Toast.LENGTH_LONG).show();
 				try {
-					client.connect(message);
+					client.connect(GET_DATE);
 				} catch (Exception e) {
-					Log.e("TAG", e.toString());
+					Log.e(getClass().getSimpleName(), e.toString());
 				}
 				break;
 			case BluetoothClient.CONNECT_SUCCESS:
 				Toast.makeText(context, "连接成功", Toast.LENGTH_LONG).show();
-				bluetoothAdapter.cancelDiscovery();
+				afterConnected();
 				break;
 			case BluetoothClient.READ_FAILED:
 				Toast.makeText(context, "读取失败", Toast.LENGTH_LONG).show();
@@ -105,8 +110,20 @@ public class BluetoothActivity extends ActionBarActivity {
 				break;
 			}
 		}
-	};
 
+		
+	};
+	
+	private void afterConnected() {
+		bluetoothAdapter.cancelDiscovery();
+		//TODO store client
+	}
+
+	/**
+	 * handle device found event,add device to list
+	 * @author kusix
+	 *
+	 */
 	private class BluetoothReceiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {

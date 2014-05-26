@@ -1,6 +1,7 @@
 package kusix.myflowers;
 
 import kusix.myflowers.bluetooth.BluetoothActivity;
+import kusix.myflowers.model.Flower;
 import kusix.myflowers.service.DataReceiveService;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
@@ -36,7 +37,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
+        //if no device,go to device search page
         if(null == flower || !flower.isEnabe()){
         	Intent btIntent = new Intent(this, BluetoothActivity.class);
             startActivity(btIntent);

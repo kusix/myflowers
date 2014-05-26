@@ -1,5 +1,6 @@
 package kusix.myflowers.bluetooth;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -71,22 +72,21 @@ public class BluetoothClient {
 				try {
 					InputStream inputStream = socket.getInputStream();
 					int bufferSize = 1024;
-					char[] buffer = new char[bufferSize];
-					int i = 0;
-					do {
-						try {
-							buffer[i] = (char)inputStream.read();
-						} catch (IOException e) {
-							setState(READ_FAILED);
-							Log.e(getClass().getSimpleName(), e.toString());
-							break;
-						}
-					} while (buffer[i++] != parser.getEOF() && i < bufferSize);
-					
-
+//					char[] buffer = new char[bufferSize];
+//					int i = 0;
+//					do {
+//						try {
+//							buffer[i] = (char)inputStream.read();
+//						} catch (IOException e) {
+//							setState(READ_FAILED);
+//							Log.e(getClass().getSimpleName(), e.toString());
+//							break;
+//						}
+//					} while (buffer[i++] != parser.getEOF() && i < bufferSize);
+					byte[] bytes = readStream(inputStream);
 					 Message msg = handler.obtainMessage();
 					 msg.what = DATA;
-					 msg.obj = parser.parse(buffer);
+					 msg.obj = parser.parse(new String(bytes));
 					 handler.sendMessage(msg);
 					
 				} catch (IOException e) {
@@ -94,6 +94,19 @@ public class BluetoothClient {
 					Log.e(getClass().getSimpleName(), e.toString());
 				}
 			}
+			
+			public byte[] readStream(InputStream inputStream) throws IOException {  
+		        ByteArrayOutputStream bout = new ByteArrayOutputStream();  
+		        byte[] buffer = new byte[1024];  
+		        int len = 0;  
+		        while ((len = inputStream.read(buffer)) != -1) {  
+		            bout.write(buffer, 0, len);  
+		        }  
+		        bout.close();  
+		        inputStream.close();  
+		  
+		        return bout.toByteArray();  
+		    }
 
 			private void write(final String message) {
 				if (null != message && message.length() > 0) {
