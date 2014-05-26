@@ -99,9 +99,10 @@ public class BluetoothClient {
 		        ByteArrayOutputStream bout = new ByteArrayOutputStream();  
 		        byte[] buffer = new byte[1024];  
 		        int len = 0;  
-		        while ((len = inputStream.read(buffer)) != -1) {  
-		            bout.write(buffer, 0, len);  
-		        }  
+//		        while ((len = inputStream.read(buffer)) != -1) { 
+		        len = inputStream.read(buffer);
+		        bout.write(buffer, 0, len);  
+//		        }  
 		        bout.close();  
 		        inputStream.close();  
 		  
@@ -112,7 +113,8 @@ public class BluetoothClient {
 				if (null != message && message.length() > 0) {
 					try {
 						OutputStream outStream = socket.getOutputStream();
-						outStream.write(getHexBytes(message));
+//						outStream.write(getHexBytes(message));
+						outStream.write("D".getBytes());
 					} catch (IOException e) {
 						setState(WRITE_FAILED);
 						Log.e(getClass().getSimpleName(), e.toString());

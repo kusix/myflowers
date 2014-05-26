@@ -38,7 +38,7 @@ public class BluetoothActivity extends ActionBarActivity {
 	private List<BluetoothDevice> deviceList;
 	private IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
 	private BluetoothClient client;
-	private static final String GET_DATE = "D";
+	private static final String GET_DATE = "00000D";
 	private ListView listView;
 	private Context context;
 

@@ -12,12 +12,13 @@ import android.util.Log;
 public class FlowerDataProtocolParser implements ProtocolParser<FlowerData> {
 
 	/**
-	 * {"d": { "at": 26, "i": "Read fail", "ah": 60, "sm": 40, "l": 675 } }
+	 * {"cmd":115,"d":{"ati":"Read fail","at":-1,"ahi":"","ah":-1,"l":549}}
 	 * 
 	 * @see kusix.myflowers.protocol.ProtocolParser#parse(char[])
 	 */
 	@Override
 	public FlowerData parse(String s) {
+		Log.d(getClass().getSimpleName(), "parse json string : " + s);
 		FlowerData flowerData = new FlowerData();
 		try {
 			JSONObject obj = new JSONObject(String.valueOf(s));
