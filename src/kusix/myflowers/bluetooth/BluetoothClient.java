@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 
 import kusix.myflowers.protocol.ProtocolParser;
 import kusix.myflowers.protocol.impl.JsonProtocolParser;
+import kusix.myflowers.util.Tags;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.os.Handler;
@@ -57,14 +58,14 @@ public class BluetoothClient {
 							try {
 								socket.close();
 							} catch (IOException e) {
-								Log.e(getClass().getSimpleName(), e.toString());
+								Log.e(Tags.ME, e.toString());
 								socket = null;
 							}
 						}
 					}
 				} catch (Exception e) {
 					setState(CONNECT_FAILED);
-					Log.e(getClass().getSimpleName(), e.toString());
+					Log.e(Tags.ME, e.toString());
 				}
 			}
 
@@ -79,7 +80,7 @@ public class BluetoothClient {
 //							buffer[i] = (char)inputStream.read();
 //						} catch (IOException e) {
 //							setState(READ_FAILED);
-//							Log.e(getClass().getSimpleName(), e.toString());
+//							Log.e(Tags.ME, e.toString());
 //							break;
 //						}
 //					} while (buffer[i++] != parser.getEOF() && i < bufferSize);
@@ -91,7 +92,7 @@ public class BluetoothClient {
 					
 				} catch (IOException e) {
 					setState(WRITE_FAILED);
-					Log.e(getClass().getSimpleName(), e.toString());
+					Log.e(Tags.ME, e.toString());
 				}
 			}
 			
@@ -117,7 +118,7 @@ public class BluetoothClient {
 						outStream.write("D".getBytes());
 					} catch (IOException e) {
 						setState(WRITE_FAILED);
-						Log.e(getClass().getSimpleName(), e.toString());
+						Log.e(Tags.ME, e.toString());
 					}
 				}
 			}

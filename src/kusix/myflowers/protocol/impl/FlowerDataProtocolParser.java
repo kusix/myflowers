@@ -2,10 +2,10 @@ package kusix.myflowers.protocol.impl;
 
 import kusix.myflowers.model.FlowerData;
 import kusix.myflowers.protocol.ProtocolParser;
+import kusix.myflowers.util.Tags;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import android.util.Log;
 
@@ -18,7 +18,7 @@ public class FlowerDataProtocolParser implements ProtocolParser<FlowerData> {
 	 */
 	@Override
 	public FlowerData parse(String s) {
-		Log.d(getClass().getSimpleName(), "parse json string : " + s);
+		Log.d(Tags.ME, "parse json string : " + s);
 		FlowerData flowerData = new FlowerData();
 		try {
 			JSONObject obj = new JSONObject(String.valueOf(s));
@@ -30,7 +30,7 @@ public class FlowerDataProtocolParser implements ProtocolParser<FlowerData> {
 				flowerData.setLight(data.getInt("l"));
 			}
 		} catch (JSONException e) {
-			Log.e(getClass().getSimpleName(), "parse json string failed", e);
+			Log.e(Tags.ME, "parse json string failed", e);
 		}
 
 		return flowerData;

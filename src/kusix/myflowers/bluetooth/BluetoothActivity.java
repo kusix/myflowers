@@ -3,9 +3,11 @@ package kusix.myflowers.bluetooth;
 import java.util.ArrayList;
 import java.util.List;
 
+import kusix.myflowers.R;
+import kusix.myflowers.util.Tags;
+
 import org.json.JSONObject;
 
-import kusix.myflowers.R;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -17,8 +19,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -74,7 +74,7 @@ public class BluetoothActivity extends ActionBarActivity {
 				try {
 					client.connect(GET_DATE);
 				} catch (Exception e) {
-					Log.e(getClass().getSimpleName(), e.toString());
+					Log.e(Tags.ME, e.toString());
 				}
 			}
 		});
@@ -92,7 +92,7 @@ public class BluetoothActivity extends ActionBarActivity {
 				try {
 					client.connect(GET_DATE);
 				} catch (Exception e) {
-					Log.e(getClass().getSimpleName(), e.toString());
+					Log.e(Tags.ME, e.toString());
 				}
 				break;
 			case BluetoothClient.CONNECT_SUCCESS:
@@ -134,7 +134,7 @@ public class BluetoothActivity extends ActionBarActivity {
 				if (deviceItems.indexOf(device.getName()) == -1) {
 					String item = device.getName() + "\n" + device.getAddress();
 					deviceItems.add(item);
-					Log.d(getClass().getSimpleName(), "add device:" + item);
+					Log.d(Tags.ME, "add device:" + item);
 				}
 				deviceList.add(device);
 			}
