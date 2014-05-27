@@ -23,12 +23,10 @@ void loop() {
     sprintf(buf, "%d", cmd);
     info += buf;
     //{"cmd":115,"d":{"ati":"Read fail","at":-1,"ahi":"","ah":-1,"l":549}}
-    info += ",\"d\":{\"ati\":\"";
+    info += ",\"d\":{";
     // read temperature
-    Serial.print(info);
-    info = "";
     float t = dht.readTemperature();
-    info += "\",\"at\":";
+    info += "\"at\":";
     if (isnan(t)) {
       info += "-1";
     } else {          
@@ -36,10 +34,9 @@ void loop() {
       info += buf;
     }
     
-    info += ",\"ahi\":\"";
     // read humidity
     float h = dht.readHumidity();
-    info += "\",\"ah\":";
+    info += ",\"ah\":";
     if (isnan(h) || isnan(t)) {
       info += "-1";
     } else {

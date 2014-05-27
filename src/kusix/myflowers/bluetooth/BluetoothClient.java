@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.lang.reflect.Method;
 
 import kusix.myflowers.protocol.ProtocolParser;
+import kusix.myflowers.protocol.impl.FlowerDataProtocolParser;
 import kusix.myflowers.protocol.impl.JsonProtocolParser;
 import kusix.myflowers.util.Tags;
 import android.bluetooth.BluetoothDevice;
@@ -26,14 +27,19 @@ public class BluetoothClient {
 	private BluetoothDevice device;
 	private Handler handler;
 	private BluetoothSocket socket;
-	private boolean isConnect;
+	private boolean hasConnected;
 
 	public BluetoothClient(BluetoothDevice device, Handler handler) {
 		this.device = device;
 		this.handler = handler;
 	}
+	
+	public boolean hasConnected(){
+		return hasConnected;
+	}
 
-	public void connect(final String message) {
+	public void connect() {
+		hasConnected = false;
 		Thread thread = new Thread(new Runnable() {
 
 			public void run() {
@@ -47,87 +53,76 @@ public class BluetoothClient {
 					if (null != tmp) {
 						socket = tmp;
 						socket.connect();
-						isConnect = true;
+						hasConnected = true;
 						setState(CONNECT_SUCCESS);
-						if (isConnect) {
-							write(message);
-							read(new JsonProtocolParser());
-						}
-
-						if (socket != null) {
-							try {
-								socket.close();
-							} catch (IOException e) {
-								Log.e(Tags.ME, e.toString());
-								socket = null;
-							}
-						}
+//						while (hasConnected) {
+//							write(message);
+//							read(new FlowerDataProtocolParser());
+//							Thread.sleep(1000);
+//						}
 					}
 				} catch (Exception e) {
+					Log.e(Tags.ME, e.toString());
+					close();
 					setState(CONNECT_FAILED);
-					Log.e(Tags.ME, e.toString());
-				}
-			}
-
-			private void read(ProtocolParser parser) {
-				try {
-					InputStream inputStream = socket.getInputStream();
-					int bufferSize = 1024;
-//					char[] buffer = new char[bufferSize];
-//					int i = 0;
-//					do {
-//						try {
-//							buffer[i] = (char)inputStream.read();
-//						} catch (IOException e) {
-//							setState(READ_FAILED);
-//							Log.e(Tags.ME, e.toString());
-//							break;
-//						}
-//					} while (buffer[i++] != parser.getEOF() && i < bufferSize);
-					byte[] bytes = readStream(inputStream);
-					 Message msg = handler.obtainMessage();
-					 msg.what = DATA;
-					 msg.obj = parser.parse(new String(bytes));
-					 handler.sendMessage(msg);
 					
-				} catch (IOException e) {
-					setState(WRITE_FAILED);
-					Log.e(Tags.ME, e.toString());
-				}
-			}
-			
-			public byte[] readStream(InputStream inputStream) throws IOException {  
-		        ByteArrayOutputStream bout = new ByteArrayOutputStream();  
-		        byte[] buffer = new byte[1024];  
-		        int len = 0;  
-//		        while ((len = inputStream.read(buffer)) != -1) { 
-		        len = inputStream.read(buffer);
-		        bout.write(buffer, 0, len);  
-//		        }  
-		        bout.close();  
-		        inputStream.close();  
-		  
-		        return bout.toByteArray();  
-		    }
-
-			private void write(final String message) {
-				if (null != message && message.length() > 0) {
-					try {
-						OutputStream outStream = socket.getOutputStream();
-//						outStream.write(getHexBytes(message));
-						outStream.write("D".getBytes());
-					} catch (IOException e) {
-						setState(WRITE_FAILED);
-						Log.e(Tags.ME, e.toString());
-					}
 				}
 			}
 
-			private void setState(int state) {
-				handler.sendMessage(handler.obtainMessage(state));
-			}
+
+
 		});
 		thread.start();
+	}
+	
+	public Object read(ProtocolParser parser) throws IOException {
+			InputStream inputStream = socket.getInputStream();
+			byte[] bytes = readStream(inputStream);
+//			 Message msg = handler.obtainMessage();
+//			 msg.what = DATA;
+//			 msg.obj = parser.parse(new String(bytes));
+//			 handler.sendMessage(msg);
+			return parser.parse(new String(bytes));
+	}
+	
+	private byte[] readStream(InputStream inputStream) throws IOException {  
+//        ByteArrayOutputStream bout = new ByteArrayOutputStream();  
+        byte[] buffer = new byte[1024];  
+        int len = 0;
+        len = inputStream.read(buffer);
+//        bout.write(buffer, 0, len);
+//        bout.close();
+  
+        return buffer;  
+    }
+
+	public void write(final String message) {
+		if (null != message && message.length() > 0) {
+			try {
+				OutputStream outStream = socket.getOutputStream();
+//				outStream.write(getHexBytes(message));
+				outStream.write(message.getBytes());
+			} catch (Exception e) {
+//				setState(WRITE_FAILED);
+				Log.e(Tags.ME, e.toString());
+			}
+		}
+	}
+
+	private void setState(int state) {
+		handler.sendMessage(handler.obtainMessage(state));
+	}
+	
+	public void close() {
+		hasConnected = false;
+		if (socket != null) {
+			try {
+				socket.close();
+			} catch (IOException e) {
+				Log.e(Tags.ME, e.toString());
+				socket = null;
+			}
+		}
 	}
 
 	private byte[] getHexBytes(String message) {
