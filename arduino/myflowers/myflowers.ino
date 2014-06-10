@@ -1,12 +1,13 @@
 #include "DHT.h"
 #define DHT_PIN 2
 #define LIGHT_PIN 4
+#define SM_PIN 5
 #define DHT_TYPE DHT22
 
 
 DHT dht(DHT_PIN, DHT_TYPE);
 int rate4collect = 5000;
-int lightValue = 0;
+int light,sm = 0;
 int MAX_ANALOG_READ_VALUE = 1024;
 
 void setup() {
@@ -18,7 +19,7 @@ void setup() {
 void loop() {   
   char buf[10];  
   int cmd = Serial.read();
-  if(cmd !=-1 && cmd!= 'C'){
+  if(cmd == 68){
     String info = "{\"cmd\":";
     sprintf(buf, "%d", cmd);
     info += buf;
@@ -44,10 +45,17 @@ void loop() {
       info += buf;
     }    
     //read light value
-    lightValue = MAX_ANALOG_READ_VALUE - analogRead(LIGHT_PIN);
+    light = MAX_ANALOG_READ_VALUE - analogRead(LIGHT_PIN);
     info += ",\"l\":";
-    sprintf(buf, "%d", lightValue);
+    sprintf(buf, "%d", light);
     info += buf;
+    
+    //read light value
+    sm = MAX_ANALOG_READ_VALUE - analogRead(SM_PIN);
+    info += ",\"sm\":";
+    sprintf(buf, "%d", sm);
+    info += buf;
+    
     info += "}}";
     Serial.println(info);
     delay(rate4collect);

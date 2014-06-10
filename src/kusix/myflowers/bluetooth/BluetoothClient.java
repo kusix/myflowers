@@ -23,6 +23,9 @@ public class BluetoothClient {
 	protected static final int READ_FAILED = 2;
 	protected static final int WRITE_FAILED = 3;
 	protected static final int DATA = 4;
+	
+	protected static final int CR = 13;
+	protected static final int LF = 10;
 
 	private BluetoothDevice device;
 	private Handler handler;
@@ -33,8 +36,8 @@ public class BluetoothClient {
 		this.device = device;
 		this.handler = handler;
 	}
-	
-	public boolean hasConnected(){
+
+	public boolean hasConnected() {
 		return hasConnected;
 	}
 
@@ -55,55 +58,76 @@ public class BluetoothClient {
 						socket.connect();
 						hasConnected = true;
 						setState(CONNECT_SUCCESS);
-//						while (hasConnected) {
-//							write(message);
-//							read(new FlowerDataProtocolParser());
-//							Thread.sleep(1000);
-//						}
+						// while (hasConnected) {
+						// write(message);
+						// read(new FlowerDataProtocolParser());
+						// Thread.sleep(1000);
+						// }
 					}
 				} catch (Exception e) {
 					Log.e(Tags.ME, e.toString());
 					close();
 					setState(CONNECT_FAILED);
-					
+
 				}
 			}
-
-
 
 		});
 		thread.start();
 	}
-	
+
 	public Object read(ProtocolParser parser) throws IOException {
-			InputStream inputStream = socket.getInputStream();
-			byte[] bytes = readStream(inputStream);
-//			 Message msg = handler.obtainMessage();
-//			 msg.what = DATA;
-//			 msg.obj = parser.parse(new String(bytes));
-//			 handler.sendMessage(msg);
-			return parser.parse(new String(bytes));
+		InputStream inputStream = socket.getInputStream();
+//		byte[] bytes = readStream(inputStream);
+		// Message msg = handler.obtainMessage();
+		// msg.what = DATA;
+		// msg.obj = parser.parse(new String(bytes));
+		// handler.sendMessage(msg);
+		return parser.parse(readStream(inputStream));
 	}
-	
-	private byte[] readStream(InputStream inputStream) throws IOException {  
-//        ByteArrayOutputStream bout = new ByteArrayOutputStream();  
-        byte[] buffer = new byte[1024];  
-        int len = 0;
-        len = inputStream.read(buffer);
-//        bout.write(buffer, 0, len);
-//        bout.close();
-  
-        return buffer;  
-    }
+
+	// private byte[] readStream(InputStream inputStream) throws IOException {
+	// ByteArrayOutputStream bout = new ByteArrayOutputStream();
+	// byte[] buffer = new byte[1024];
+	// int len = 0;
+	// len = inputStream.read(buffer);
+	// bout.write(buffer, 0, len);
+	// bout.close();
+	//
+	// return buffer;
+	// }
+
+//	private byte[] readStream(InputStream in) throws IOException {
+//		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+//		byte[] buffer = new byte[1024];
+//		int len = 0;
+//		while ((len = in.read(buffer)) != -1) {
+//			outStream.write(buffer, 0, len);
+//		}
+//		in.close();
+//		return outStream.toByteArray();
+//	}
+
+	public String readStream(InputStream in) throws IOException {
+		int ch;
+		StringBuffer temper = new StringBuffer();
+		while ((ch = in.read()) > 0) {
+			if(ch == CR && in.read() == LF){
+				break;
+			}
+			temper.append((char) ch);
+		}
+		return temper.toString();
+	}
 
 	public void write(final String message) {
 		if (null != message && message.length() > 0) {
 			try {
 				OutputStream outStream = socket.getOutputStream();
-//				outStream.write(getHexBytes(message));
+				// outStream.write(getHexBytes(message));
 				outStream.write(message.getBytes());
 			} catch (Exception e) {
-//				setState(WRITE_FAILED);
+				// setState(WRITE_FAILED);
 				Log.e(Tags.ME, e.toString());
 			}
 		}
@@ -112,7 +136,7 @@ public class BluetoothClient {
 	private void setState(int state) {
 		handler.sendMessage(handler.obtainMessage(state));
 	}
-	
+
 	public void close() {
 		hasConnected = false;
 		if (socket != null) {

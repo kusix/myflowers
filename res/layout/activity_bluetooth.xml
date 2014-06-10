@@ -5,13 +5,27 @@
     android:layout_height="match_parent"
     tools:context="kusix.myflowers.bluetooth.BluetoothActivity"
     tools:ignore="MergeRootFrame" >
-    
-    <ListView
-        android:id="@+id/listView1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
 
-    </ListView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <ListView
+            android:id="@+id/listView1"
+            android:layout_width="match_parent"
+            android:layout_height="354dp"
+            android:layout_weight="1" >
+        </ListView>
+
+        <Button
+            android:id="@+id/btn_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/btn_search_device" />
+
+    </LinearLayout>
     
 </FrameLayout>
 

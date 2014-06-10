@@ -4,9 +4,11 @@
     <string name="app_name">智花</string>
     <string name="temp_name">温度:</string>
     <string name="temp_unit">℃</string>
-    <string name="no_data">--</string>
+    <string name="light_name">光照:</string>
+    <string name="light_unit">分</string>
+    <string name="no_data">-</string>
     <string name="action_settings">设置</string>
+    <string name="btn_search_device">扫描</string>
     <string name="title_activity_bluetooth">BluetoothActivity</string>
-    <string name="hello_world">Hello world!</string>
 
 </resources>

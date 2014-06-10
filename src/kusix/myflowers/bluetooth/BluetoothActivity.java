@@ -3,7 +3,6 @@ package kusix.myflowers.bluetooth;
 import java.util.ArrayList;
 import java.util.List;
 
-import kusix.myflowers.MainActivity;
 import kusix.myflowers.R;
 import kusix.myflowers.util.ShareApplication;
 import kusix.myflowers.util.Tags;
@@ -19,8 +18,10 @@ import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -85,6 +86,18 @@ public class BluetoothActivity extends ActionBarActivity {
 				}
 			}
 		});
+		
+		Button searchBtn = (Button)this.findViewById(R.id.btn_search);
+		searchBtn.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				bluetoothAdapter.cancelDiscovery();
+				bluetoothAdapter.startDiscovery();
+			}
+			
+		});
 		// TODO 定时扫描
 		bluetoothAdapter.startDiscovery();
 	}
@@ -103,7 +116,7 @@ public class BluetoothActivity extends ActionBarActivity {
 //				}
 				break;
 			case BluetoothClient.CONNECT_SUCCESS:
-				Toast.makeText(context, "连接成功", Toast.LENGTH_LONG).show();
+				Toast.makeText(context, "连接成功", Toast.LENGTH_SHORT).show();
 				afterConnected();
 				break;
 			case BluetoothClient.READ_FAILED:
@@ -123,10 +136,10 @@ public class BluetoothActivity extends ActionBarActivity {
 
 	private void afterConnected() {
 		bluetoothAdapter.cancelDiscovery();
-		Intent intent = new Intent("addDeviceFinished");
-        this.sendBroadcast(intent);
         ((ShareApplication)getApplicationContext()).setClient(client);
 		this.finish();
+		Intent intent = new Intent("addDeviceFinished");
+        this.sendBroadcast(intent);
 		// TODO store client
 	}
 

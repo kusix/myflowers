@@ -7,7 +7,6 @@ import kusix.myflowers.bluetooth.BluetoothClient;
 import kusix.myflowers.model.Flower;
 import kusix.myflowers.model.FlowerData;
 import kusix.myflowers.protocol.impl.FlowerDataProtocolParser;
-import kusix.myflowers.service.DataReceiveService;
 import kusix.myflowers.util.ShareApplication;
 import kusix.myflowers.util.Tags;
 import android.content.BroadcastReceiver;
@@ -15,6 +14,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
@@ -35,52 +36,53 @@ public class MainActivity extends ActionBarActivity {
 	private IntentFilter dataReceiverFilter = new IntentFilter(
 			addDeviceFinishedReceiver.ADD_DEVICE_FINISHED);
 	private BroadcastReceiver dataReceiver = new addDeviceFinishedReceiver();
-	private TextView tempView;
 	private FragmentManager fragmentManager;
 	private Flower inActiveFlower;
 	private BluetoothClient client;
 	private Thread refreshDataThread;
 	private boolean canRefresh;
 
-	private int temp;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		this.registerReceiver(dataReceiver, dataReceiverFilter);
+		fragmentManager = getSupportFragmentManager();
+		if (savedInstanceState == null) {
+			fragmentManager
+					.beginTransaction()
+					.add(R.id.container, new PlaceholderFragment(),
+							"placeholderFragment").commit();
+		}
 		// if no device,go to device search page
 		if (null == inActiveFlower || !inActiveFlower.isEnabe()) {
 			Intent btIntent = new Intent(this, BluetoothActivity.class);
 			startActivity(btIntent);
-		} else {
-			fragmentManager = getSupportFragmentManager();
-			if (savedInstanceState == null) {
-				fragmentManager
-						.beginTransaction()
-						.add(R.id.container, new PlaceholderFragment(),
-								"placeholderFragment").commit();
-			}
-			this.registerReceiver(dataReceiver, dataReceiverFilter);
-			this.startService(new Intent(this, DataReceiveService.class));
 		}
+
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
 		canRefresh = true;
-		if(null != refreshDataThread && !refreshDataThread.isAlive()){
-			refreshDataThread.start();
-			Log.d(Tags.ME,"refresh thread has resume...");
+		if (null != refreshDataThread && !refreshDataThread.isAlive()) {
+			refreshData();
+			Log.d(Tags.ME, "refresh thread has resume...");
 		}
 		this.registerReceiver(dataReceiver, dataReceiverFilter);
 	}
 
 	@Override
 	public void onPause() {
-		this.unregisterReceiver(dataReceiver);
 		canRefresh = false;
 		super.onPause();
+	}
+
+	@Override
+	public void onDestroy() {
+		this.unregisterReceiver(dataReceiver);
+		super.onDestroy();
 	}
 
 	@Override
@@ -121,47 +123,74 @@ public class MainActivity extends ActionBarActivity {
 		}
 	}
 
+	private Handler handler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+			case 1:
+				
+				TextView textView = (TextView) getView(R.id.temp);
+				if(null == textView){
+					break;
+				}
+				textView.setText(String
+						.valueOf(((FlowerData) msg.obj).getAirTemperature()));
+				((TextView) getView(R.id.light)).setText(String
+						.valueOf(((FlowerData) msg.obj).getLight()));
+			}
+		}
+
+	};
+
+	private View getView(int id) {
+		return fragmentManager.findFragmentByTag("placeholderFragment")
+				.getView().findViewById(id);
+	}
+
 	class addDeviceFinishedReceiver extends BroadcastReceiver {
 
 		public static final String ADD_DEVICE_FINISHED = "addDeviceFinished";
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			// TODO Auto-generated method stub
-//			int temp = intent.getIntExtra("temp", 0);
-			 tempView =
-			 (TextView)fragmentManager.findFragmentByTag("placeholderFragment").getView().findViewById(R.id.temp);
-			 
+			Log.d(Tags.ME, "reveive <addDeviceFinished> intent");
 			client = ((ShareApplication) getApplicationContext()).getClient();
-			canRefresh = true;
-			refreshDataThread = new Thread(new Runnable() {
-				
-
-				@Override
-				public void run() {
-					while (client.hasConnected() && canRefresh) {
-						try {
-							client.write("D");
-							FlowerData data = (FlowerData)client.read(new FlowerDataProtocolParser());
-							tempView.setText(String.valueOf(data.getAirTemperature()));
-							Thread.sleep(1000);
-						} catch (IOException e) {
-							Log.e(Tags.ME, e.toString());
-							client.connect();
-						} catch (Exception e) {
-							Log.e(Tags.ME, e.toString());
-
-						}
-					}
-					Log.d(Tags.ME,"refresh thread will be stop...");
-
-				}
-
-			});
-			refreshDataThread.start();
+			refreshData();
 			inActiveFlower = new Flower();
 		}
 
+	}
+
+	private void refreshData() {
+		canRefresh = true;
+		refreshDataThread = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				if (!client.hasConnected()) {
+					client.connect();
+				}
+				while (client.hasConnected() && canRefresh) {
+					try {
+						client.write("D");
+						FlowerData data = (FlowerData) client
+								.read(new FlowerDataProtocolParser());
+						handler.sendMessage(handler.obtainMessage(1, data));
+						Thread.sleep(1000);
+					} catch (IOException e) {
+						Log.e(Tags.ME, e.toString());
+						client.connect();
+					} catch (Exception e) {
+						Log.e(Tags.ME, e.toString());
+
+					}
+				}
+				Log.d(Tags.ME, "refresh thread will be stop...");
+
+			}
+
+		});
+		refreshDataThread.start();
 	}
 
 }
