@@ -45,6 +45,7 @@ public class MainActivity extends ActionBarActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.d(Tags.ME, "---onCreate---");
 		setContentView(R.layout.activity_main);
 		this.registerReceiver(dataReceiver, dataReceiverFilter);
 		fragmentManager = getSupportFragmentManager();
@@ -65,6 +66,7 @@ public class MainActivity extends ActionBarActivity {
 	@Override
 	public void onResume() {
 		super.onResume();
+		Log.d(Tags.ME, "---onResume---");
 		canRefresh = true;
 		if (null != refreshDataThread && !refreshDataThread.isAlive()) {
 			refreshData();
@@ -76,11 +78,13 @@ public class MainActivity extends ActionBarActivity {
 	@Override
 	public void onPause() {
 		canRefresh = false;
+		Log.d(Tags.ME, "---onPause---");
 		super.onPause();
 	}
 
 	@Override
 	public void onDestroy() {
+		Log.d(Tags.ME, "---onDestroy---");
 		this.unregisterReceiver(dataReceiver);
 		super.onDestroy();
 	}
@@ -123,12 +127,12 @@ public class MainActivity extends ActionBarActivity {
 		}
 	}
 
+	//display data
 	private Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 			case 1:
-				
 				TextView textView = (TextView) getView(R.id.temp);
 				if(null == textView){
 					break;

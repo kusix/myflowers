@@ -16,14 +16,12 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        
-        <item name="android:textColor">#FFFFFF</item>
         <item name="android:typeface">monospace</item>
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
     
     <style name="main" parent="AppTheme">
-        <item name="android:background">#87CEFA</item>
+        <item name="android:background">#F8F8F8</item>
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 

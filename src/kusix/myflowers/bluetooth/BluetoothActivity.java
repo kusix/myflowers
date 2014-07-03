@@ -94,6 +94,9 @@ public class BluetoothActivity extends ActionBarActivity {
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				bluetoothAdapter.cancelDiscovery();
+				deviceList.clear();
+				deviceItems.clear();
+				deviceListAdapter.notifyDataSetChanged();
 				bluetoothAdapter.startDiscovery();
 			}
 			
