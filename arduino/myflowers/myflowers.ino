@@ -1,7 +1,7 @@
 #include "DHT.h"
 #define DHT_PIN 2
-#define LIGHT_PIN 4
-#define SM_PIN 5
+#define LIGHT_PIN 2
+#define SM_PIN 3
 #define DHT_TYPE DHT22
 
 
@@ -12,7 +12,7 @@ int MAX_ANALOG_READ_VALUE = 1024;
 
 void setup() {
   Serial.begin(9600); 
-  //Serial.println("myflower wakeup!"); 
+  Serial.println("myflower wakeup!"); 
   dht.begin();
 }
 
@@ -30,8 +30,8 @@ void loop() {
     info += "\"at\":";
     if (isnan(t)) {
       info += "-1";
-    } else {          
-      sprintf(buf, "%d", t);
+    } else {     
+      dtostrf(t,3,1,buf);
       info += buf;
     }
     
@@ -41,7 +41,7 @@ void loop() {
     if (isnan(h) || isnan(t)) {
       info += "-1";
     } else {
-      sprintf(buf, "%d", h);
+      dtostrf(h,3,0,buf);
       info += buf;
     }    
     //read light value
