@@ -17,12 +17,27 @@
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:typeface">monospace</item>
+        <item name="android:windowNoTitle">true</item>  
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
     
     <style name="main" parent="AppTheme">
         <item name="android:background">#F8F8F8</item>
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+    
+    <style name="tab_bar">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:paddingTop">8dip</item>
+        <item name="android:paddingBottom">4dip</item>
+        <item name="android:button">@null</item>
+        <item name="android:background">@drawable/tabbar_itembg_selector</item>  
+   		<item name="android:textColor">@color/tabbar_textcolor_selector</item>  
+        
     </style>
 
 </resources>

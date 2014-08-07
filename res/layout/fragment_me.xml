@@ -1,0 +1,51 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <GridLayout
+        android:id="@+id/top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:background="#AA000000"
+        android:columnCount="4"
+        android:rowCount="1" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="1"
+            android:layout_columnSpan="2"
+            android:layout_gravity="center"
+            android:layout_row="0"
+            android:text="我的花花"
+            android:textColor="@android:color/holo_blue_light"
+            android:textSize="25sp" />
+
+        <Button
+            android:id="@+id/btn_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="3"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_row="0"
+            android:background="#00000000"
+            android:text="+"
+            android:textColor="@color/button_textcolor_selector"
+            android:textSize="40dp" />
+    </GridLayout>
+
+    <ListView
+        android:id="@+id/flower_list"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin" >
+    </ListView>
+
+</LinearLayout>

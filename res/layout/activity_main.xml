@@ -4,5 +4,59 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="kusix.myflowers.MainActivity"
-    tools:ignore="MergeRootFrame" />
+    tools:ignore="MergeRootFrame" >
 
+    <LinearLayout  
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <FrameLayout
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="0dip"
+            android:layout_weight="1" />
+
+        <RadioGroup
+            android:id="@+id/tab_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#AA000000"
+            android:checkedButton="@+id/tab_bar_me"
+            android:orientation="horizontal" >
+            
+            <RadioButton
+                android:id="@+id/btn_me"
+                style="@style/tab_bar"
+                android:drawableTop="@drawable/tab_temp_selector"
+                android:text="我的" />
+
+            <RadioButton
+                android:id="@+id/btn_temp"
+                style="@style/tab_bar"
+                android:drawableTop="@drawable/tab_temp_selector"
+                android:text="温度" />
+
+            <RadioButton
+                android:id="@+id/btn_airHumidity"
+                style="@style/tab_bar"
+                android:drawableTop="@drawable/tab_temp_selector"
+                android:text="空气湿度" />
+
+            <RadioButton
+                android:id="@+id/btn_soilMoisture"
+                style="@style/tab_bar"
+                android:drawableTop="@drawable/tab_temp_selector"
+                android:text="土壤湿度" />
+
+            <RadioButton
+                android:id="@+id/btn_light"
+                style="@style/tab_bar"
+                android:drawableTop="@drawable/tab_temp_selector"
+                android:text="光照" />
+
+            
+        </RadioGroup>
+    </LinearLayout>
+
+</FrameLayout>

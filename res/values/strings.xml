@@ -10,5 +10,6 @@
     <string name="action_settings">设置</string>
     <string name="btn_search_device">扫描</string>
     <string name="title_activity_bluetooth">扫描附近的花盆</string>
+    <string name="btn_return_name">&lt;</string>
 
 </resources>

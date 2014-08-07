@@ -1,19 +1,15 @@
 package kusix.myflowers.bluetooth;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
 
 import kusix.myflowers.protocol.ProtocolParser;
-import kusix.myflowers.protocol.impl.FlowerDataProtocolParser;
-import kusix.myflowers.protocol.impl.JsonProtocolParser;
 import kusix.myflowers.util.Tags;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
 public class BluetoothClient {

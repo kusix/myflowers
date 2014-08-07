@@ -2,8 +2,8 @@ package kusix.myflowers;
 
 import java.io.IOException;
 
-import kusix.myflowers.bluetooth.BluetoothActivity;
 import kusix.myflowers.bluetooth.BluetoothClient;
+import kusix.myflowers.chart.ChartViewBuilder;
 import kusix.myflowers.model.Flower;
 import kusix.myflowers.model.FlowerData;
 import kusix.myflowers.protocol.impl.FlowerDataProtocolParser;
@@ -18,6 +18,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +26,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 /**
@@ -37,6 +41,7 @@ public class MainActivity extends ActionBarActivity {
 			addDeviceFinishedReceiver.ADD_DEVICE_FINISHED);
 	private BroadcastReceiver dataReceiver = new addDeviceFinishedReceiver();
 	private FragmentManager fragmentManager;
+	private RadioGroup tabBarGroup;
 	private Flower inActiveFlower;
 	private BluetoothClient client;
 	private Thread refreshDataThread;
@@ -44,23 +49,39 @@ public class MainActivity extends ActionBarActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+		super.onCreate(savedInstanceState); 
 		Log.d(Tags.ME, "---onCreate---");
 		setContentView(R.layout.activity_main);
 		this.registerReceiver(dataReceiver, dataReceiverFilter);
 		fragmentManager = getSupportFragmentManager();
-		if (savedInstanceState == null) {
-			fragmentManager
-					.beginTransaction()
-					.add(R.id.container, new PlaceholderFragment(),
-							"placeholderFragment").commit();
-		}
-		// if no device,go to device search page
-		if (null == inActiveFlower || !inActiveFlower.isEnabe()) {
-			Intent btIntent = new Intent(this, BluetoothActivity.class);
-			startActivity(btIntent);
-		}
+        tabBarGroup = (RadioGroup) findViewById(R.id.tab_bar);
+        tabBarGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {  
+            @Override  
+            public void onCheckedChanged(RadioGroup group, int checkedId) {  
+                changeFragmentByID(checkedId); 
+            }
 
+			
+        });
+        tabBarGroup.check(R.id.btn_me);
+	}
+	
+	private void changeFragmentByID(int checkedId) {
+
+        Fragment fragment = FragmentFactory.getInstance().getFragmentByID(checkedId);
+		changeFragment(fragment);
+	}
+
+	public void changeFragment(Fragment fragment) {
+		FragmentTransaction transaction = fragmentManager.beginTransaction();    
+        transaction.replace(R.id.content, fragment);  
+        transaction.commit();
+	}  
+
+	
+	@Override
+	public void onActivityResult(int arg0,int arg1,Intent arg2){
+		super.onActivityResult(arg0, arg1, arg2);
 	}
 
 	@Override
@@ -89,43 +110,6 @@ public class MainActivity extends ActionBarActivity {
 		super.onDestroy();
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
-
-	/**
-	 * A placeholder fragment containing a simple view.
-	 */
-	public static class PlaceholderFragment extends Fragment {
-
-		public PlaceholderFragment() {
-
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_main, container,
-					false);
-			return rootView;
-		}
-	}
 
 	//display data
 	private Handler handler = new Handler() {
@@ -133,23 +117,19 @@ public class MainActivity extends ActionBarActivity {
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 			case 1:
-				TextView textView = (TextView) getView(R.id.temp);
-				if(null == textView){
-					break;
-				}
-				textView.setText(String
-						.valueOf(((FlowerData) msg.obj).getAirTemperature()));
-				((TextView) getView(R.id.light)).setText(String
-						.valueOf(((FlowerData) msg.obj).getLight()));
+//				TextView textView = (TextView) getView(R.id.temp);
+//				if(null == textView){
+//					break;
+//				}
+//				textView.setText(String
+//						.valueOf(((FlowerData) msg.obj).getAirTemperature()));
+//				((TextView) getView(R.id.light)).setText(String
+//						.valueOf(((FlowerData) msg.obj).getLight()));
 			}
 		}
 
 	};
 
-	private View getView(int id) {
-		return fragmentManager.findFragmentByTag("placeholderFragment")
-				.getView().findViewById(id);
-	}
 
 	class addDeviceFinishedReceiver extends BroadcastReceiver {
 
